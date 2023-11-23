@@ -1,0 +1,15 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net6.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Challenge.Application.Services\Challenge.Application.Services.csproj" />
+    <ProjectReference Include="..\Challenge.Common.Utils\Challenge.Common.Utils.csproj" />
+    <ProjectReference Include="..\Challenge.Infrastructure.Persistence\Challenge.Infrastructure.Persistence.csproj" />
+  </ItemGroup>
+
+</Project>

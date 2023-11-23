@@ -1,0 +1,29 @@
+FROM mcr.microsoft.com/dotnet/sdk:6.0 AS base
+WORKDIR /app
+EXPOSE 80 
+EXPOSE 443
+
+FROM mcr.microsoft.com/dotnet/core/sdk:6.0 AS build
+WORKDIR /src
+COPY ["Challenge.Presentation.API/Challenge.Presentation.API.csproj", "Challenge.Presentation.API/"]
+COPY ["Challenge.Application.Services/Challenge.Application.Services.csproj", "Challenge.Application.Services/"]
+COPY ["Challenge.Application.Dtos/Challenge.Application.Dtos.csproj", "Challenge.Application.Dtos/"]
+COPY ["Challenge.Infrastructure.Persistence/Challenge.Infrastructure.Persistence.csproj", "Challenge.Infrastructure.Persistence/"]
+COPY ["Challenge.Domain.core/Challenge.Domain.core.csproj", "Challenge.Domain.core/"]
+COPY ["Challenge.Common.Exceptions/Challenge.Common.Exceptions.csproj", "Challenge.Common.Exceptions/"]
+COPY ["Challenge.Common.IoC/Challenge.Common.IoC.csproj", "Challenge.Common.IoC/"]
+COPY ["Challenge.Common.Mappers/Challenge.Common.Mappers.csproj", "Challenge.Common.Mappers/"]
+COPY ["Challenge.Common.Utils/Challenge.Common.Utils.csproj", "Challenge.Common.Utils/"]
+   
+RUN dotnet restore "Challenge.Presentation.API/Challenge.Presentation.API.csproj"
+COPY . .
+WORKDIR "Challenge.Presentation.API"
+RUN dotnet build "Challenge.Presentation.API.csproj" -c Release -o /app/build
+
+FROM build AS publish
+RUN dotnet publish "Challenge.Presentation.API.csproj" -c Release -o /app/publish
+
+FROM base AS final
+WORKDIR /app
+COPY --from=publish /app/publish .
+ENTRYPOINT ["dotnet", "Challenge.Presentation.API.dll"]
